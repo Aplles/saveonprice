@@ -109,7 +109,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = env("STATIC_URL", cast=str)
+STATIC_URL = env("STATIC_URL", cast=str, default="/static/")
 STATIC_ROOT = os.path.join(BASE_DIR, env("STATIC_ROOT", cast=str, default="static"))
 MEDIA_ROOT = os.path.join(BASE_DIR, "/uploads/")
 MEDIA_URL = "/uploads/"
@@ -118,3 +118,13 @@ MEDIA_URL = "/uploads/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CELERY/REDIS
+REDIS_HOST = env('REDIS_HOST', cast=str)
+REDIS_PORT = env('REDIS_PORT', cast=str)
+CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
